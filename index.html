@@ -1,0 +1,481 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="片語多義">
+<meta name="theme-color" content="#2b5cd6">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}*,*::before,*::after{box-sizing:border-box}[hidden]{display:none!important}img{max-width:100%}</style>
+</head>
+<body>
+<title>學測片語多義</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* Layout: one narrow column, exam-paper sentence card in the middle, thumb-reach answer buttons below. */
+:root{
+  --bg:#f3f5f8; --surface:#ffffff; --ink:#18202b; --muted:#5b6676; --line:#d9dee6;
+  --accent:#2b5cd6; --accent-soft:#e3eafb; --ok:#1f8a4c; --ok-soft:#dff3e7; --bad:#c8432f; --bad-soft:#fbe5e1;
+  --hl:#fff1a8;
+  --f-zh:"Noto Sans TC","PingFang TC","Heiti TC",system-ui,sans-serif;
+  --f-en:"Source Serif 4",Georgia,"Times New Roman",serif;
+  --f-num:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#11151c; --surface:#1a2029; --ink:#e7ebf1; --muted:#9aa5b5; --line:#2c3440;
+  --accent:#7ea2ff; --accent-soft:#1f2b47; --ok:#5fcf8c; --ok-soft:#173326; --bad:#ff8a77; --bad-soft:#3a1f1b; --hl:#5a4d12; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#11151c; --surface:#1a2029; --ink:#e7ebf1; --muted:#9aa5b5; --line:#2c3440;
+  --accent:#7ea2ff; --accent-soft:#1f2b47; --ok:#5fcf8c; --ok-soft:#173326; --bad:#ff8a77; --bad-soft:#3a1f1b; --hl:#5a4d12; color-scheme:dark}
+html,body{height:100%}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-zh);font-size:16px;line-height:1.6;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:12px 28px}
+.wrap{max-width:560px;margin:0 auto;display:flex;flex-direction:column;gap:14px}
+header{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+h1{font-size:1.25rem;margin:0;font-weight:700;letter-spacing:.02em}
+.sync{font-size:.75rem;color:var(--muted)}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
+button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.modes{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.mode{background:var(--surface);border:2px solid var(--line);border-radius:14px;padding:14px;text-align:left;display:flex;flex-direction:column;gap:2px}
+.mode[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft)}
+.mode b{font-size:1.05rem}
+.mode span{font-size:.8rem;color:var(--muted)}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;background:var(--surface);border-radius:14px;padding:12px 8px;border:1px solid var(--line)}
+.stat{text-align:center;display:flex;flex-direction:column}
+.stat .n{font-family:var(--f-num);font-size:1.25rem;font-variant-numeric:tabular-nums}
+.stat .l{font-size:.72rem;color:var(--muted)}
+.label{font-size:.78rem;color:var(--muted);letter-spacing:.06em}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:5px 12px;font-size:.85rem}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.go{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.btn{border-radius:12px;padding:13px 10px;font-weight:700;text-align:center}
+.btn.primary{background:var(--accent);color:#fff}
+:root[data-theme="dark"] .btn.primary{color:#0d1424}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .btn.primary{color:#0d1424}}
+.btn.ghost{background:var(--surface);border:1px solid var(--line)}
+.btn:disabled{opacity:.45;cursor:default}
+.weak{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 14px}
+.weak ol{margin:6px 0 0;padding-left:1.3em;font-size:.88rem}
+.weak li{margin:2px 0}
+.weak .en{font-family:var(--f-en)}
+/* quiz */
+.bar{height:6px;background:var(--line);border-radius:3px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--accent);width:0;transition:width .25s}
+.qtop{display:flex;justify-content:space-between;align-items:center;font-size:.82rem;color:var(--muted)}
+.tag{background:var(--accent-soft);color:var(--accent);border-radius:6px;padding:1px 8px;font-size:.75rem;font-weight:500}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:18px 16px;display:flex;flex-direction:column;gap:10px}
+.prompt{font-size:.85rem;color:var(--muted)}
+.sent{font-family:var(--f-en);font-size:1.15rem;line-height:1.55}
+.sent + .sent{border-top:1px dashed var(--line);padding-top:8px}
+.blank{display:inline-block;min-width:4.5em;border-bottom:2px solid var(--ink);text-align:center;font-weight:600}
+.blank.ok{color:var(--ok);border-color:var(--ok)}
+mark{background:var(--hl);color:inherit;padding:0 2px;border-radius:3px;font-weight:600}
+.opts{display:flex;flex-direction:column;gap:8px}
+.opt{background:var(--surface);border:2px solid var(--line);border-radius:12px;padding:12px 14px;text-align:left;display:flex;gap:10px;align-items:flex-start;min-height:48px}
+.opt .k{font-family:var(--f-num);color:var(--muted);flex:none}
+.opt .t{min-width:0}
+.opt.en .t{font-family:var(--f-en);font-size:1.05rem}
+.opt.ok{border-color:var(--ok);background:var(--ok-soft)}
+.opt.bad{border-color:var(--bad);background:var(--bad-soft)}
+.opt[disabled]{cursor:default}
+.fb{border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:6px;font-size:.92rem}
+.fb.ok{background:var(--ok-soft)} .fb.bad{background:var(--bad-soft)}
+.fb h3{margin:0;font-size:1rem}
+.fb .ok-t{color:var(--ok)} .fb .bad-t{color:var(--bad)}
+.fb ul{margin:0;padding-left:1.2em}
+.done{text-align:center}
+.done .big{font-family:var(--f-num);font-size:2.6rem}
+.foot{font-size:.75rem;color:var(--muted);text-align:center}
+.err{color:var(--bad)}
+@media (prefers-reduced-motion: reduce){.bar i{transition:none}}
+</style>
+
+<div class="wrap" id="app">
+  <header><h1>學測片語多義</h1><span class="sync" id="sync">載入中…</span></header>
+  <p id="loading">正在載入題庫…</p>
+</div>
+
+<script>
+(() => {
+const $ = (s, el=document) => el.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const shuffle = a => { a = a.slice(); for (let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; };
+const pick = (a,n) => shuffle(a).slice(0,n);
+let SESSION = 20; const KEY = 'xc-phrase-v1', EKEY = 'xc-phrase-errs-v1', LKEY = 'xc-phrase-len';
+try { const v = +localStorage.getItem(LKEY); if (v) SESSION = v; } catch(e){}
+
+let DATA = null, ITEMS = [], mode = 'p', filter = '全部';
+let prog = load();
+let errs = (() => { try { return JSON.parse(localStorage.getItem(EKEY) || '[]'); } catch(e){ return []; } })();          // { key: {c, w, s(streak), t(last ts)} }
+let db = null, uid = null, dbBusy = false, dbDirty = false;
+
+function load(){ try { return JSON.parse(localStorage.getItem(KEY) || '{}'); } catch(e){ return {}; } }
+function saveLocal(){ try { localStorage.setItem(KEY, JSON.stringify(prog)); localStorage.setItem(EKEY, JSON.stringify(errs)); } catch(e){} }
+
+/* ---------- build question pool ---------- */
+function buildItems(){
+  ITEMS = [];
+  for (const p of DATA.phrases) ITEMS.push({key:'p:'+p.id, mode:'p', cat:p.cat, src:p});
+  for (const w of DATA.words){
+    w.senses.forEach((s,i) => {
+      (s.dx||[]).forEach((d,j) => { if (d && d.length >= 3 && s.ex[j]) ITEMS.push({key:`w:${w.word}:${i}:pick:${j}`, mode:'w', cat:'學測型選字', w, i, j}); });
+      ITEMS.push({key:`w:${w.word}:${i}:mean`, mode:'w', cat:'選意思', w, i});
+      if (w.senses.length >= 2) ITEMS.push({key:`w:${w.word}:${i}:same`, mode:'w', cat:'找同義', w, i});
+    });
+    if (w.senses.length >= 3) ITEMS.push({key:`w:${w.word}:fill`, mode:'w', cat:'一字多空', w});
+  }
+}
+const cats = () => mode==='p' ? ['全部','片語動詞','介系詞慣用語','動詞搭配','慣用語'] : (ITEMS.some(it=>it.cat==='學測型選字') ? ['學測型選字','選意思','找同義','一字多空','全部'] : ['全部','選意思','找同義','一字多空']);
+const pool = () => ITEMS.filter(it => it.mode===mode && (filter==='全部' || it.cat===filter));
+const st = k => prog[k] || {c:0,w:0,s:0,t:0};
+const mastered = k => st(k).s >= 2;
+const isWeak = k => { const x = st(k); return x.w > 0 && x.s < 2; };
+
+/* ---------- question rendering ---------- */
+function blankify(sent, cls=''){ return esc(sent).replace(/\{[^}]+\}/g, `<span class="blank ${cls}">&nbsp;</span>`).replace(/_{3,}/g, `<span class="blank ${cls}">&nbsp;</span>`); }
+function highlight(sent){ return esc(sent).replace(/\{([^}]+)\}/g, '<mark>$1</mark>'); }
+function plain(sent){ return sent.replace(/[{}]/g,''); }
+
+function makeQ(it){
+  if (it.mode==='p'){
+    const p = it.src, meanings = [p.zh].concat(p.dist);
+    const order = shuffle([0,1,2,3]);
+    return { tag:p.cat, prompt:'選出最適合填入空格的答案', body:`<div class="sent">${blankify(p.stem)}</div>`, en:true,
+      opts: order.map(i => p.options[i]), answer: order.indexOf(0),
+      feedback: ok => `<h3 class="${ok?'ok-t':'bad-t'}">${ok?'答對了':'正解：'+esc(p.options[0])}</h3><div>${esc(p.zh)}</div><div>${esc(p.ex)}</div><ul>${p.dist.map(d=>`<li>${esc(d)}</li>`).join('')}</ul>`,
+      filled: () => `<div class="sent">${esc(p.stem).replace(/_{3,}/, `<span class="blank ok">${esc(p.options[0])}</span>`)}</div>` };
+  }
+  const w = it.w, S = w.senses;
+  const senseLine = () => `<ul>${S.map(s=>`<li><b>${esc(s.pos)}</b> ${esc(s.zh)}</li>`).join('')}</ul>`;
+  if (it.cat === '學測型選字'){
+    const s = S[it.i], ex = s.ex[it.j], m = ex.match(/\{([^}]+)\}/), ans = m ? m[1] : w.word;
+    const cap = /^[A-Z]/.test(ans), fixc = x => cap ? x.charAt(0).toUpperCase() + x.slice(1) : x;
+    const opts = shuffle([ans].concat(s.dx[it.j].slice(0,3).map(fixc)));
+    return { tag:'學測型選字', prompt:'選出最適合填入空格的字', body:`<div class="sent">${blankify(ex)}</div>`, en:true,
+      opts, answer: opts.indexOf(ans),
+      feedback: ok => `<h3 class="${ok?'ok-t':'bad-t'}">${ok?'答對了':'正解：'+esc(ans)}</h3><div>這裡的 <b>${esc(ans)}</b>＝${esc(s.zh)}（${esc(s.pos)}）</div><div>${esc(w.word)} 的常考意思：</div>${senseLine()}`,
+      filled: () => `<div class="sent">${highlight(ex)}</div>` };
+  }
+  if (it.key.endsWith(':mean')){
+    const s = S[it.i], ex = pick(s.ex,1)[0];
+    let wrong = S.filter((_,j)=>j!==it.i).map(x=>x.zh);
+    wrong = shuffle(wrong).concat(shuffle(w.traps||[])).slice(0,3);
+    const opts = shuffle([s.zh].concat(wrong));
+    return { tag:'選意思', prompt:`句中 <mark>${esc(w.word)}</mark> 的意思是？`, body:`<div class="sent">${highlight(ex)}</div>`,
+      opts, answer: opts.indexOf(s.zh),
+      feedback: ok => `<h3 class="${ok?'ok-t':'bad-t'}">${ok?'答對了':'正解：'+esc(s.zh)}</h3><div>${esc(w.word)} 的常考意思：</div>${senseLine()}` };
+  }
+  if (it.key.endsWith(':same')){
+    const s = S[it.i], [a,b] = shuffle(s.ex);
+    const others = shuffle(S.filter((_,j)=>j!==it.i)).slice(0,3).map(x => pick(x.ex,1)[0]);
+    const opts = shuffle([b].concat(others));
+    return { tag:'找同義', prompt:`哪一句的 <mark>${esc(w.word)}</mark> 與題目句意思相同？`, body:`<div class="sent">${highlight(a)}</div>`, en:true,
+      opts: opts.map(highlight), raw:true, answer: opts.indexOf(b),
+      feedback: ok => `<h3 class="${ok?'ok-t':'bad-t'}">${ok?'答對了':'答錯了'}</h3><div>題目句的意思：<b>${esc(s.zh)}</b></div>${senseLine()}` };
+  }
+  // one word, three blanks
+  const three = pick(S,3).map(s => pick(s.ex,1)[0]);
+  const others = pick(DATA.words.filter(x => x.word!==w.word).map(x=>x.word),3);
+  const opts = shuffle([w.word].concat(others));
+  return { tag:'一字多空', prompt:'哪一個字可以填入全部三個空格？（可能需要變化字形）', body: three.map(x=>`<div class="sent">${blankify(x)}</div>`).join(''), en:true,
+    opts, answer: opts.indexOf(w.word),
+    feedback: ok => `<h3 class="${ok?'ok-t':'bad-t'}">${ok?'答對了':'正解：'+esc(w.word)}</h3>${three.map(x=>`<div class="sent">${highlight(x)}</div>`).join('')}${senseLine()}` };
+}
+
+/* ---------- session ---------- */
+let queue = [], qi = 0, score = 0, total = 0, cur = null;
+function nextBatch(onlyWeak){
+  const P = pool(), used = new Set(queue.slice(Math.max(0,qi-30)).map(z=>z.key));
+  const n = SESSION === 999 ? 20 : SESSION;
+  if (onlyWeak) return shuffle(P.filter(it => isWeak(it.key) && !used.has(it.key))).slice(0,n);
+  const weak = shuffle(P.filter(it => isWeak(it.key) && !used.has(it.key)));
+  const fresh = shuffle(P.filter(it => !prog[it.key]));
+  const rest = shuffle(P.filter(it => prog[it.key] && !isWeak(it.key) && !mastered(it.key) && !used.has(it.key)));
+  const done = shuffle(P.filter(it => mastered(it.key) && !used.has(it.key)));
+  return weak.slice(0, Math.ceil(n*0.3)).concat(fresh, rest, done).slice(0,n);
+}
+function startSession(onlyWeak){
+  queue = []; qi = 0;
+  const list = nextBatch(onlyWeak);
+  if (!list.length) return;
+  queue = list; qi = 0; score = 0; total = list.length; renderQ();
+}
+function renderQ(){
+  if (qi >= queue.length && SESSION === 999){ const more = nextBatch(false); if (more.length){ queue = queue.concat(more); } }
+  if (qi >= queue.length) return renderDone();
+  cur = { it: queue[qi], q: makeQ(queue[qi]), answered:false };
+  const q = cur.q, letters = 'ABCD';
+  $('#app').innerHTML = `
+    <div class="qtop"><span><span class="tag">${esc(q.tag)}</span></span><span style="font-family:var(--f-num)">${SESSION===999 ? `第 ${qi+1} 題・答對 ${score}` : `${qi+1} / ${queue.length}`}</span></div>
+    <div class="bar"><i style="width:${SESSION===999 ? (qi%20)/20*100 : qi/queue.length*100}%"></i></div>
+    <div class="card"><div class="prompt">${q.prompt}</div><div id="body">${q.body}</div></div>
+    <div class="opts">${q.opts.map((o,i)=>`<button class="opt ${q.en?'en':''}" data-i="${i}"><span class="k">${letters[i]}</span><span class="t">${q.raw?o:esc(o)}</span></button>`).join('')}</div>
+    <div id="fb"></div>
+    <div class="go"><button class="btn ghost" id="quit">結束</button><button class="btn primary" id="next" hidden>下一題</button></div>`;
+  document.querySelectorAll('.opt').forEach(b => b.addEventListener('click', () => answer(+b.dataset.i)));
+  $('#quit').addEventListener('click', () => qi > 0 ? renderDone() : renderHome());
+  $('#next').addEventListener('click', () => { qi++; renderQ(); });
+  window.scrollTo(0,0);
+}
+function answer(i){
+  if (cur.answered) return; cur.answered = true;
+  const q = cur.q, ok = i === q.answer, k = cur.it.key, x = st(k);
+  document.querySelectorAll('.opt').forEach((b,j) => { b.disabled = true; if (j===q.answer) b.classList.add('ok'); else if (j===i) b.classList.add('bad'); });
+  if (ok){ score++; x.c++; x.s++; } else { x.w++; x.s = 0;
+    const txt = h => String(h).replace(/<[^>]+>/g,'');
+    errs.push({k, m: cur.it.mode, ty: cur.it.mode==='p' ? (cur.it.src.trap||'其他') : cur.it.cat, a: txt(q.opts[q.answer]), p: txt(q.opts[i]), t: Date.now()});
+    if (errs.length > 800) errs = errs.slice(-800);
+    // 答錯：同一輪內 3～5 題後再出一次
+    const pos = Math.min(queue.length, qi + 3 + Math.floor(Math.random()*3));
+    if (queue.filter(z=>z.key===k).length < 2) queue.splice(pos, 0, cur.it);
+  }
+  x.t = Date.now(); prog[k] = x; saveLocal(); pushRemote(k, ok);
+  if (q.filled) $('#body').innerHTML = q.filled();
+  $('#fb').innerHTML = `<div class="fb ${ok?'ok':'bad'}">${q.feedback(ok)}</div>`;
+  $('#next').hidden = false; $('#next').textContent = (qi+1 >= queue.length && SESSION !== 999) ? '看結果' : '下一題';
+  $('#next').scrollIntoView({block:'nearest', behavior:'smooth'});
+}
+function renderDone(){
+  $('#app').innerHTML = `<header><h1>學測片語多義</h1><span class="sync" id="sync"></span></header>
+    <div class="card done"><div class="label">本輪答對</div><div class="big">${score} / ${Math.max(1, Math.min(queue.length, qi + (cur && cur.answered ? 1 : 0)))}</div>
+    <div>${queue.length>total?`其中 ${queue.length-total} 題是答錯後的重練`:''}</div></div>
+    <div class="go"><button class="btn ghost" id="home">回首頁</button><button class="btn primary" id="again">再一輪</button></div>`;
+  $('#home').addEventListener('click', renderHome); $('#again').addEventListener('click', () => startSession(false));
+  showSync();
+}
+
+/* ---------- error patterns ---------- */
+const ADVICE = {
+  '同動詞不同介副詞':'同一個動詞換介副詞就變意思（put off／put up with）。作答時先看句子要的「意思方向」，再對介副詞。',
+  '同介系詞不同名詞':'同介系詞開頭的慣用語（on edge／on the spot）。不要只看介系詞，要整組記中文意思。',
+  '字面陷阱':'選了字面上跟情境沾邊的選項（in the same boat 配「一群人」）。慣用語多半不是字面意思，先想整組的引申義。',
+  '方向相反':'意思方向判斷錯（side by side vs. far apart）。先找句中的因果、對比線索，確認是正面還是反面。',
+  '近義混淆':'意思接近但用法或搭配不同。注意後面接的介系詞與受詞。',
+  '選意思':'熟字生義：看到熟字直接套最常見的意思。要用整句上下文判斷。',
+  '找同義':'同一個字不同意思時分不清。先把題目句換成中文，再逐句比對。',
+  '一字多空':'對一個字的多種用法不熟。練習時把每個意思各記一句例句。'
+};
+function renderPattern(){
+  const E = errs.filter(e => e.m === mode);
+  const byType = {}; E.forEach(e => byType[e.ty] = (byType[e.ty]||0)+1);
+  const types = Object.entries(byType).sort((a,b)=>b[1]-a[1]);
+  const maxT = types.length ? types[0][1] : 1;
+  const pairs = {}; E.forEach(e => { const key = e.a + '｜' + e.p; pairs[key] = (pairs[key]||0)+1; });
+  const topPairs = Object.entries(pairs).sort((a,b)=>b[1]-a[1]).slice(0,10);
+  const recent = E.filter(e => Date.now()-e.t < 7*864e5).length;
+  $('#app').innerHTML = `
+    <header><h1>錯題態樣</h1><span class="sync" id="sync"></span></header>
+    <div class="modes">
+      <button class="mode" data-m="p" aria-pressed="${mode==='p'}"><b>片語</b><span>${errs.filter(e=>e.m==='p').length} 筆錯題</span></button>
+      <button class="mode" data-m="w" aria-pressed="${mode==='w'}"><b>一字多義</b><span>${errs.filter(e=>e.m==='w').length} 筆錯題</span></button>
+    </div>
+    ${E.length ? `
+    <div class="weak"><div class="label">最常掉進的陷阱</div>
+      <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px">${types.map(([t,n])=>`
+        <div><div style="display:flex;justify-content:space-between;font-size:.9rem"><span>${esc(t)}</span><span style="font-family:var(--f-num)">${n}</span></div>
+        <div class="bar" style="height:8px"><i style="width:${n/maxT*100}%;background:var(--bad)"></i></div></div>`).join('')}</div></div>
+    ${types[0] && ADVICE[types[0][0]] ? `<div class="fb bad"><h3 class="bad-t">先加強：${esc(types[0][0])}</h3><div>${esc(ADVICE[types[0][0]])}</div></div>` : ''}
+    <div class="weak"><div class="label">最常混淆（正解 ← 你選的）</div><ol>${topPairs.map(([k,n])=>{const [a,p]=k.split('｜');return `<li><span class="en">${esc(a)}</span> ← <span class="en" style="color:var(--bad)">${esc(p)}</span>　${n} 次</li>`;}).join('')}</ol></div>
+    <p class="foot">共 ${E.length} 筆錯題，最近 7 天 ${recent} 筆。</p>` :
+    `<div class="card"><div>還沒有錯題紀錄。開始練習後，這裡會統計你最常掉進哪一類陷阱、最常把哪兩個選項搞混。</div></div>`}
+    ${errs.length ? `<button class="btn primary" id="export">複製錯題報告（傳給老師）</button><textarea id="exp" readonly hidden style="width:100%;min-height:180px;font:inherit;font-size:.8rem;border-radius:12px;padding:10px;background:var(--surface);color:var(--ink);border:1px solid var(--line)"></textarea><div id="expmsg" class="foot" hidden></div>` : ''}
+    <div class="go"><button class="btn ghost" id="home">回首頁</button><button class="btn primary" id="weakgo" ${pool().some(it=>isWeak(it.key))?'':'disabled'}>練這些錯題</button></div>`;
+  document.querySelectorAll('.mode').forEach(b => b.addEventListener('click', () => { mode = b.dataset.m; filter = cats()[0]; renderPattern(); }));
+  $('#home').addEventListener('click', renderHome);
+  $('#weakgo').addEventListener('click', () => startSession(true));
+  const ex = $('#export');
+  if (ex) ex.addEventListener('click', () => {
+    const t = buildReport(), ta = $('#exp'), msg = $('#expmsg');
+    ta.value = t; ta.hidden = false; msg.hidden = false;
+    const done = () => { msg.textContent = '已複製。打開 LINE 或訊息，長按貼上傳給老師。'; };
+    const fail = () => { ta.focus(); ta.select(); msg.textContent = '這裡無法自動複製：請長按上方文字，選「全選」再「拷貝」。'; };
+    try { navigator.clipboard.writeText(t).then(done, fail); } catch(e){ fail(); }
+  });
+  showSync();
+}
+function buildReport(){
+  const d = new Date(), lines = [];
+  lines.push(`【學測片語多義】錯題報告 ${d.getFullYear()}/${d.getMonth()+1}/${d.getDate()}`);
+  for (const m of ['p','w']){
+    const E = errs.filter(e => e.m === m); if (!E.length) continue;
+    const all = ITEMS.filter(it => it.mode === m), seen = all.filter(it => prog[it.key]);
+    const c = seen.reduce((a,it)=>a+st(it.key).c,0), w = seen.reduce((a,it)=>a+st(it.key).w,0);
+    lines.push('', m==='p' ? '■ 片語' : '■ 一字多義');
+    lines.push(`練過 ${seen.length}／${all.length} 題，作答 ${c+w} 次，答對率 ${c+w ? Math.round(c/(c+w)*100) : 0}%，熟練 ${all.filter(it=>mastered(it.key)).length} 題`);
+    const byType = {}; E.forEach(e => byType[e.ty] = (byType[e.ty]||0)+1);
+    lines.push('陷阱類型：' + Object.entries(byType).sort((a,b)=>b[1]-a[1]).map(([t,n])=>`${t} ${n}`).join('、'));
+    const pairs = {}; E.forEach(e => { const k = e.a+' ← '+e.p; pairs[k] = (pairs[k]||0)+1; });
+    lines.push('錯誤組合（正解 ← 誤選）：');
+    Object.entries(pairs).sort((a,b)=>b[1]-a[1]).slice(0,40).forEach(([k,n]) => lines.push(`- ${k}（${n}）`));
+    const weak = all.filter(it => isWeak(it.key)).sort((a,b)=>st(b.key).w-st(a.key).w).slice(0,40);
+    if (weak.length){
+      lines.push('尚未熟練的錯題：');
+      weak.forEach(it => lines.push(`- ${m==='p' ? it.src.options[0]+'｜'+it.src.id : it.w.word+'｜'+it.cat}（錯 ${st(it.key).w}）`));
+    }
+  }
+  return lines.join('\n');
+}
+
+/* ---------- move progress between devices ---------- */
+const b64 = u8 => { let s=''; for (let i=0;i<u8.length;i+=0x8000) s += String.fromCharCode.apply(null, u8.subarray(i,i+0x8000)); return btoa(s); };
+const unb64 = t => Uint8Array.from(atob(t), c => c.charCodeAt(0));
+async function packProgress(){
+  const json = JSON.stringify({p:prog, e:errs});
+  const raw = new TextEncoder().encode(json);
+  if (window.CompressionStream){
+    try { const buf = await new Response(new Blob([raw]).stream().pipeThrough(new CompressionStream('gzip'))).arrayBuffer(); return 'XCZ:' + b64(new Uint8Array(buf)); } catch(e){}
+  }
+  return 'XCJ:' + b64(raw);
+}
+async function unpackProgress(code){
+  code = code.replace(/\s+/g,'');
+  let raw;
+  if (code.startsWith('XCZ:')){
+    if (!window.DecompressionStream) throw new Error('old');
+    const buf = await new Response(new Blob([unb64(code.slice(4))]).stream().pipeThrough(new DecompressionStream('gzip'))).arrayBuffer();
+    raw = new Uint8Array(buf);
+  } else if (code.startsWith('XCJ:')) raw = unb64(code.slice(4));
+  else throw new Error('format');
+  return JSON.parse(new TextDecoder().decode(raw));
+}
+function mergeProgress(d){
+  let n = 0;
+  for (const [k,v] of Object.entries(d.p || {})){
+    const cur = prog[k];
+    if (!cur || (v.t||0) > (cur.t||0)){ prog[k] = v; n++; }
+  }
+  const seen = new Set(errs.map(e => e.k + '@' + e.t));
+  for (const e of (d.e || [])) if (!seen.has(e.k + '@' + e.t)) errs.push(e);
+  errs.sort((a,b) => a.t - b.t); if (errs.length > 800) errs = errs.slice(-800);
+  saveLocal(); return n;
+}
+function renderMove(){
+  const done = Object.keys(prog).length;
+  $('#app').innerHTML = `
+    <header><h1>搬移進度</h1><span class="sync" id="sync"></span></header>
+    <div class="card">
+      <div class="label">步驟 1：在原本的裝置</div>
+      <div>這台目前有 ${done} 題的作答紀錄、${errs.length} 筆錯題。按下面的按鈕複製進度碼，用 LINE 或 AirDrop 傳到另一台裝置。</div>
+      <button class="btn primary" id="copy">複製進度碼</button>
+      <textarea id="out" readonly hidden style="width:100%;min-height:90px;font-family:var(--f-num);font-size:.7rem;border-radius:10px;padding:8px;background:var(--bg);color:var(--ink);border:1px solid var(--line);word-break:break-all"></textarea>
+      <div id="outmsg" class="foot" hidden></div>
+    </div>
+    <div class="card">
+      <div class="label">步驟 2：在另一台裝置</div>
+      <div>打開這個網頁，進到這一頁，把收到的進度碼長按貼在下面，再按「匯入」。兩台的紀錄會合併，同一題以較新的一次為準。</div>
+      <textarea id="in" placeholder="在這裡貼上進度碼" style="width:100%;min-height:90px;font-family:var(--f-num);font-size:.75rem;border-radius:10px;padding:8px;background:var(--bg);color:var(--ink);border:1px solid var(--line)"></textarea>
+      <button class="btn primary" id="imp">匯入</button>
+      <div id="inmsg" class="foot" hidden></div>
+    </div>
+    <div class="go"><button class="btn ghost" id="home">回首頁</button></div>`;
+  $('#home').addEventListener('click', renderHome);
+  $('#copy').addEventListener('click', async () => {
+    const code = await packProgress(), ta = $('#out'), msg = $('#outmsg');
+    ta.value = code; ta.hidden = false; msg.hidden = false;
+    const ok = () => { msg.textContent = '已複製進度碼。到另一台裝置貼上即可。'; };
+    const fail = () => { ta.focus(); ta.select(); msg.textContent = '無法自動複製：請長按上方的進度碼，選「全選」再「拷貝」。'; };
+    try { navigator.clipboard.writeText(code).then(ok, fail); } catch(e){ fail(); }
+  });
+  $('#imp').addEventListener('click', async () => {
+    const msg = $('#inmsg'); msg.hidden = false;
+    try {
+      const d = await unpackProgress($('#in').value);
+      const n = mergeProgress(d);
+      msg.textContent = `匯入完成：更新了 ${n} 題的紀錄。`;
+      pushAll();
+    } catch(e){
+      msg.textContent = e.message === 'old' ? '這台裝置的瀏覽器太舊，無法讀取壓縮的進度碼。請先更新 iOS。' : '進度碼不完整或格式不對，請確認整段都有貼上。';
+    }
+  });
+  showSync();
+}
+
+/* ---------- home ---------- */
+function renderHome(){
+  const P = pool(), all = ITEMS.filter(it => it.mode===mode);
+  const seen = all.filter(it => prog[it.key]).length, mast = all.filter(it => mastered(it.key)).length, weak = all.filter(it => isWeak(it.key));
+  const weakList = weak.sort((a,b)=>st(b.key).w - st(a.key).w).slice(0,5).map(it => it.mode==='p'
+      ? `<li><span class="en">${esc(it.src.options[0])}</span>　錯 ${st(it.key).w} 次</li>`
+      : `<li><span class="en">${esc(it.w.word)}</span>（${esc(it.cat)}）　錯 ${st(it.key).w} 次</li>`).join('');
+  $('#app').innerHTML = `
+    <header><h1>學測片語多義</h1><span class="sync" id="sync"></span></header>
+    <div class="modes">
+      <button class="mode" data-m="p" aria-pressed="${mode==='p'}"><b>片語</b><span>${DATA.phrases.length} 題・片語動詞、慣用語</span></button>
+      <button class="mode" data-m="w" aria-pressed="${mode==='w'}"><b>一字多義</b><span>${DATA.words.length} 字・${ITEMS.filter(it=>it.cat==='學測型選字').length || ''}${ITEMS.some(it=>it.cat==='學測型選字')?' 題學測型':'熟字生義'}</span></button>
+    </div>
+    <div class="stats">
+      <div class="stat"><span class="n">${all.length}</span><span class="l">題目</span></div>
+      <div class="stat"><span class="n">${seen}</span><span class="l">練過</span></div>
+      <div class="stat"><span class="n">${mast}</span><span class="l">熟練</span></div>
+      <div class="stat"><span class="n">${weak.length}</span><span class="l">待重練</span></div>
+    </div>
+    <div class="label">範圍</div>
+    <div class="chips">${cats().map(c=>`<button class="chip" data-c="${esc(c)}" aria-pressed="${filter===c}">${esc(c)}</button>`).join('')}</div>
+    <div class="label">每輪題數</div>
+    <div class="chips">${[10,20,50,999].map(n=>`<button class="chip len" data-n="${n}" aria-pressed="${SESSION===n}">${n===999?'不限':n+' 題'}</button>`).join('')}</div>
+    <div class="go"><button class="btn primary" id="start" ${P.length?'':'disabled'}>${SESSION===999?'開始連續練習':'開始 '+Math.min(SESSION,P.length)+' 題'}</button>
+      <button class="btn ghost" id="weakbtn" ${P.some(it=>isWeak(it.key))?'':'disabled'}>只練錯題</button></div>
+    <button class="btn ghost" id="pat">錯題態樣${errs.length?`（${errs.length} 筆）`:''}</button>
+    ${weak.length?`<div class="weak"><div class="label">最常錯</div><ol>${weakList}</ol></div>`:''}
+    <p class="foot">連續答對 2 次算熟練；答錯的題目會在幾題後再出現。</p>
+    <button class="btn ghost" id="move">搬移進度到另一台裝置</button>`;
+  document.querySelectorAll('.mode').forEach(b => b.addEventListener('click', () => { mode = b.dataset.m; filter = cats()[0]; renderHome(); }));
+  document.querySelectorAll('.chip[data-c]').forEach(b => b.addEventListener('click', () => { filter = b.dataset.c; renderHome(); }));
+  document.querySelectorAll('.chip.len').forEach(b => b.addEventListener('click', () => { SESSION = +b.dataset.n; try { localStorage.setItem(LKEY, SESSION); } catch(e){} renderHome(); }));
+  $('#pat').addEventListener('click', renderPattern);
+  $('#move').addEventListener('click', renderMove);
+  $('#start').addEventListener('click', () => startSession(false));
+  $('#weakbtn').addEventListener('click', () => startSession(true));
+  showSync();
+}
+
+/* ---------- remote progress (so the teacher/Claude can read mistakes) ---------- */
+let syncText = '進度存在這台裝置';
+function showSync(){ const el = $('#sync'); if (el) el.textContent = syncText; }
+function pushRemote(k, ok){
+  if (!db || !uid) return; dbDirty = true; flush();
+}
+function pushAll(){ if (db && uid){ dbDirty = true; flush(); } }
+async function flush(){
+  if (dbBusy || !dbDirty) return; dbBusy = true; dbDirty = false;
+  try {
+    const compact = {}; for (const [k,v] of Object.entries(prog)) compact[k] = [v.c, v.w, v.s, v.t];
+    await db.doc('progress/' + uid).set({ stats: compact, errs: errs.slice(-500), updated: Date.now() });
+    syncText = '進度已同步';
+  } catch(e){ syncText = '進度存在這台裝置（同步失敗）'; }
+  dbBusy = false; showSync(); if (dbDirty) flush();
+}
+async function initRemote(){
+  try {
+    if (!window.claude || !window.claude.use) return;
+    const [d, u] = await Promise.all([claude.use('db'), claude.use('user')]);
+    if (!d || !u) return;
+    const id = await u.id(); if (!id) return;
+    db = d; uid = id;
+    const timer = setTimeout(() => {}, 10000);
+    const snap = await db.doc('progress/' + uid).get(); clearTimeout(timer);
+    if (snap.exists){
+      const r = snap.data() || {};
+      for (const [k,v] of Object.entries(r.stats || {})){
+        const loc = prog[k];
+        if (!loc || (v[3]||0) > (loc.t||0)) prog[k] = {c:v[0], w:v[1], s:v[2], t:v[3]};
+      }
+      if (Array.isArray(r.errs) && r.errs.length > errs.length) errs = r.errs;
+      saveLocal();
+    }
+    syncText = '進度已同步'; showSync();
+    if (!queue.length) renderHome();
+  } catch(e){ /* stay local */ }
+}
+
+fetch('data.json').then(r => { if (!r.ok) throw new Error(r.status); return r.json(); }).then(d => {
+  DATA = d; buildItems(); renderHome(); initRemote();
+}).catch(() => { $('#loading').innerHTML = '<span class="err">題庫載入失敗，請重新整理頁面。</span>'; });
+})();
+</script>
+
+</body>
+</html>
