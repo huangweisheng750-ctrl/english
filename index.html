@@ -328,17 +328,20 @@ async function packProgress(){
   return 'XCJ:' + b64(raw);
 }
 async function unpackProgress(code){
-  code = code.replace(/[^A-Za-z0-9+/=:]/g,'');
-  const at = code.search(/xc[zj]:/i); if (at > 0) code = code.slice(at);
-  code = code.slice(0,4).toUpperCase() + code.slice(4);
+  code = String(code||'').replace(/[^A-Za-z0-9+/=:]/g,'');
+  const m = code.match(/xc([zj]):/i);
+  let kind = 'J';
+  if (m){ kind = m[1].toUpperCase(); code = code.slice(m.index + 4); }
+  code = code.replace(/:/g,'');
   let raw;
-  if (code.startsWith('XCZ:')){
+  if (kind === 'Z'){
     if (!window.DecompressionStream) throw new Error('old');
-    const buf = await new Response(new Blob([unb64(code.slice(4))]).stream().pipeThrough(new DecompressionStream('gzip'))).arrayBuffer();
+    const buf = await new Response(new Blob([unb64(code)]).stream().pipeThrough(new DecompressionStream('gzip'))).arrayBuffer();
     raw = new Uint8Array(buf);
-  } else if (code.startsWith('XCJ:')) raw = unb64(code.slice(4));
-  else throw new Error('format');
-  return JSON.parse(new TextDecoder().decode(raw));
+  } else raw = unb64(code);
+  const d = JSON.parse(new TextDecoder().decode(raw));
+  if (!d || typeof d !== 'object' || !d.p) throw new Error('content');
+  return d;
 }
 function mergeProgress(d){
   let n = 0;
@@ -369,7 +372,8 @@ function renderMove(){
       <button class="btn primary" id="imp">匯入</button>
       <div id="inmsg" class="foot" hidden></div>
     </div>
-    <div class="go"><button class="btn ghost" id="home">回首頁</button></div>`;
+    <div class="go"><button class="btn ghost" id="home">回首頁</button></div>
+    <p class="foot">程式版本 1102-3</p>`;
   $('#home').addEventListener('click', renderHome);
   $('#copy').addEventListener('click', async () => {
     const code = await packProgress(), ta = $('#out'), msg = $('#outmsg');
