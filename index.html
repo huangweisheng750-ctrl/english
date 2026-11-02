@@ -329,7 +329,8 @@ async function packProgress(){
 }
 async function unpackProgress(code){
   code = code.replace(/[^A-Za-z0-9+/=:]/g,'');
-  const at = code.search(/XC[ZJ]:/); if (at > 0) code = code.slice(at);
+  const at = code.search(/xc[zj]:/i); if (at > 0) code = code.slice(at);
+  code = code.slice(0,4).toUpperCase() + code.slice(4);
   let raw;
   if (code.startsWith('XCZ:')){
     if (!window.DecompressionStream) throw new Error('old');
@@ -358,13 +359,13 @@ function renderMove(){
       <div class="label">步驟 1：在原本的裝置</div>
       <div>這台目前有 ${done} 題的作答紀錄、${errs.length} 筆錯題。按下面的按鈕複製進度碼，用 LINE 或 AirDrop 傳到另一台裝置。</div>
       <button class="btn primary" id="copy">複製進度碼</button>
-      <textarea id="out" readonly hidden style="width:100%;min-height:90px;font-family:var(--f-num);font-size:.7rem;border-radius:10px;padding:8px;background:var(--bg);color:var(--ink);border:1px solid var(--line);word-break:break-all"></textarea>
+      <textarea id="out" readonly autocapitalize="off" autocorrect="off" spellcheck="false" hidden style="width:100%;min-height:90px;font-family:var(--f-num);font-size:.7rem;border-radius:10px;padding:8px;background:var(--bg);color:var(--ink);border:1px solid var(--line);word-break:break-all"></textarea>
       <div id="outmsg" class="foot" hidden></div>
     </div>
     <div class="card">
       <div class="label">步驟 2：在另一台裝置</div>
       <div>打開這個網頁，進到這一頁，把收到的進度碼長按貼在下面，再按「匯入」。兩台的紀錄會合併，同一題以較新的一次為準。</div>
-      <textarea id="in" placeholder="在這裡貼上進度碼" style="width:100%;min-height:90px;font-family:var(--f-num);font-size:.75rem;border-radius:10px;padding:8px;background:var(--bg);color:var(--ink);border:1px solid var(--line)"></textarea>
+      <textarea id="in" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" placeholder="在這裡貼上進度碼" style="width:100%;min-height:90px;font-family:var(--f-num);font-size:.75rem;border-radius:10px;padding:8px;background:var(--bg);color:var(--ink);border:1px solid var(--line)"></textarea>
       <button class="btn primary" id="imp">匯入</button>
       <div id="inmsg" class="foot" hidden></div>
     </div>
