@@ -325,13 +325,11 @@ const unb64 = t => Uint8Array.from(atob(t), c => c.charCodeAt(0));
 async function packProgress(){
   const json = JSON.stringify({p:prog, e:errs});
   const raw = new TextEncoder().encode(json);
-  if (window.CompressionStream){
-    try { const buf = await new Response(new Blob([raw]).stream().pipeThrough(new CompressionStream('gzip'))).arrayBuffer(); return 'XCZ:' + b64(new Uint8Array(buf)); } catch(e){}
-  }
   return 'XCJ:' + b64(raw);
 }
 async function unpackProgress(code){
-  code = code.replace(/\s+/g,'');
+  code = code.replace(/[^A-Za-z0-9+/=:]/g,'');
+  const at = code.search(/XC[ZJ]:/); if (at > 0) code = code.slice(at);
   let raw;
   if (code.startsWith('XCZ:')){
     if (!window.DecompressionStream) throw new Error('old');
@@ -387,7 +385,7 @@ function renderMove(){
       msg.textContent = `匯入完成：更新了 ${n} 題的紀錄。`;
       pushAll();
     } catch(e){
-      msg.textContent = e.message === 'old' ? '這台裝置的瀏覽器太舊，無法讀取壓縮的進度碼。請先更新 iOS。' : '進度碼不完整或格式不對，請確認整段都有貼上。';
+      msg.textContent = e.message === 'old' ? '這台裝置的瀏覽器太舊，無法讀取壓縮的進度碼。請先更新 iOS。' : '進度碼無法讀取（' + (e && e.message ? e.message : e) + '）。請確認整段都有貼上。';
     }
   });
   showSync();
