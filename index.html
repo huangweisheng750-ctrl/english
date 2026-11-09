@@ -424,7 +424,8 @@ function renderHome(){
     <button class="btn ghost" id="pat">錯題態樣${errs.length?`（${errs.length} 筆）`:''}</button>
     ${weak.length?`<div class="weak"><div class="label">最常錯</div><ol>${weakList}</ol></div>`:''}
     <p class="foot">連續答對 2 次算熟練；答錯的題目會在幾題後再出現。</p>
-    <button class="btn ghost" id="move">搬移進度到另一台裝置</button>`;
+    <button class="btn ghost" id="move">搬移進度到另一台裝置</button>
+    <a class="btn ghost" href="vocab/" style="display:block;text-decoration:none;color:inherit">學測單字練習（6,000 字）→</a>`;
   document.querySelectorAll('.mode').forEach(b => b.addEventListener('click', () => { mode = b.dataset.m; filter = cats()[0]; renderHome(); }));
   document.querySelectorAll('.chip[data-c]').forEach(b => b.addEventListener('click', () => { filter = b.dataset.c; renderHome(); }));
   document.querySelectorAll('.chip.len').forEach(b => b.addEventListener('click', () => { SESSION = +b.dataset.n; try { localStorage.setItem(LKEY, SESSION); } catch(e){} renderHome(); }));
