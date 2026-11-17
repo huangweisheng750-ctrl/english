@@ -1,0 +1,509 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="學測句型">
+<meta name="theme-color" content="#2b5cd6">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}*,*::before,*::after{box-sizing:border-box}[hidden]{display:none!important}img{max-width:100%}</style>
+</head>
+<body>
+<title>學測句型</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* Same visual system as 片語多義／學測單字: one narrow column, exam-paper card, thumb-reach answer buttons. */
+:root{
+  --bg:#f3f5f8; --surface:#ffffff; --ink:#18202b; --muted:#5b6676; --line:#d9dee6;
+  --accent:#2b5cd6; --accent-soft:#e3eafb; --ok:#1f8a4c; --ok-soft:#dff3e7; --bad:#c8432f; --bad-soft:#fbe5e1;
+  --hl:#fff1a8;
+  --f-zh:"Noto Sans TC","PingFang TC","Heiti TC",system-ui,sans-serif;
+  --f-en:"Source Serif 4",Georgia,"Times New Roman",serif;
+  --f-num:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#11151c; --surface:#1a2029; --ink:#e7ebf1; --muted:#9aa5b5; --line:#2c3440;
+  --accent:#7ea2ff; --accent-soft:#1f2b47; --ok:#5fcf8c; --ok-soft:#173326; --bad:#ff8a77; --bad-soft:#3a1f1b; --hl:#5a4d12; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#11151c; --surface:#1a2029; --ink:#e7ebf1; --muted:#9aa5b5; --line:#2c3440;
+  --accent:#7ea2ff; --accent-soft:#1f2b47; --ok:#5fcf8c; --ok-soft:#173326; --bad:#ff8a77; --bad-soft:#3a1f1b; --hl:#5a4d12; color-scheme:dark}
+html,body{height:100%}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-zh);font-size:16px;line-height:1.6;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:12px 28px}
+.wrap{max-width:560px;margin:0 auto;display:flex;flex-direction:column;gap:14px}
+header{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+h1{font-size:1.25rem;margin:0;font-weight:700;letter-spacing:.02em}
+h2{font-size:1.02rem;margin:0}
+.sync{font-size:.75rem;color:var(--muted)}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
+button:focus-visible,summary:focus-visible,select:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;background:var(--surface);border-radius:14px;padding:12px 8px;border:1px solid var(--line)}
+.stat{text-align:center;display:flex;flex-direction:column}
+.stat .n{font-family:var(--f-num);font-size:1.25rem;font-variant-numeric:tabular-nums}
+.stat .l{font-size:.72rem;color:var(--muted)}
+.label{font-size:.78rem;color:var(--muted);letter-spacing:.06em}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:5px 12px;font-size:.85rem}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.go{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.go.three{grid-template-columns:1fr 1fr 1fr}
+.btn{border-radius:12px;padding:13px 10px;font-weight:700;text-align:center;display:block;text-decoration:none;color:inherit}
+.btn.primary{background:var(--accent);color:#fff}
+:root[data-theme="dark"] .btn.primary{color:#0d1424}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .btn.primary{color:#0d1424}}
+.btn.ghost{background:var(--surface);border:1px solid var(--line)}
+.btn.danger{background:var(--bad);color:#fff}
+.btn.small{padding:9px 8px;font-size:.88rem}
+.btn:disabled{opacity:.45;cursor:default}
+.weak{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 14px}
+.weak ol{margin:6px 0 0;padding-left:1.3em;font-size:.88rem}
+.weak li{margin:2px 0}
+.en{font-family:var(--f-en)}
+.today{background:var(--surface);border:2px solid var(--accent);border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:8px}
+.today .row{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.today .big{font-family:var(--f-num);font-size:1.6rem;font-variant-numeric:tabular-nums}
+.today .sub{font-size:.82rem;color:var(--muted)}
+select{font:inherit;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:9px 10px;width:100%}
+/* quiz */
+.bar{height:6px;background:var(--line);border-radius:3px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--accent);width:0;transition:width .25s}
+.qtop{display:flex;justify-content:space-between;align-items:center;font-size:.82rem;color:var(--muted);gap:8px}
+.tag{background:var(--accent-soft);color:var(--accent);border-radius:6px;padding:1px 8px;font-size:.75rem;font-weight:500;white-space:nowrap}
+.tag.lv3{background:var(--bad-soft);color:var(--bad)}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:18px 16px;display:flex;flex-direction:column;gap:10px}
+.prompt{font-size:.85rem;color:var(--muted)}
+.sent{font-family:var(--f-en);font-size:1.15rem;line-height:1.55}
+.sent.zh{font-family:var(--f-zh);font-size:1.12rem}
+.hint{font-size:.85rem;color:var(--muted)}
+.blank{display:inline-block;min-width:4.5em;border-bottom:2px solid var(--ink);text-align:center;font-weight:600}
+.blank.ok{color:var(--ok);border-color:var(--ok)}
+mark{background:var(--hl);color:inherit;padding:0 2px;border-radius:3px;font-weight:600}
+.opts{display:flex;flex-direction:column;gap:8px}
+.opt{background:var(--surface);border:2px solid var(--line);border-radius:12px;padding:12px 14px;text-align:left;display:flex;gap:10px;align-items:flex-start;min-height:48px}
+.opt .k{font-family:var(--f-num);color:var(--muted);flex:none}
+.opt .t{min-width:0;font-family:var(--f-en);font-size:1.05rem}
+.opt.ok{border-color:var(--ok);background:var(--ok-soft)}
+.opt.bad{border-color:var(--bad);background:var(--bad-soft)}
+.opt[disabled]{cursor:default}
+.fb{border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:8px;font-size:.92rem}
+.fb.ok{background:var(--ok-soft)} .fb.bad{background:var(--bad-soft)}
+.fb h3{margin:0;font-size:1rem}
+.fb .ok-t{color:var(--ok)} .fb .bad-t{color:var(--bad)}
+.fb ul{margin:0;padding-left:1.2em}
+.fb li{margin:3px 0}
+.formula{font-family:var(--f-en);background:var(--surface);border-radius:8px;padding:6px 10px;font-weight:600}
+.fb .why .en{font-weight:600}
+.done{text-align:center}
+.done .big{font-family:var(--f-num);font-size:2.6rem}
+.foot{font-size:.75rem;color:var(--muted);text-align:center}
+.err{color:var(--bad)}
+/* pattern table */
+details.pat{background:var(--surface);border:1px solid var(--line);border-radius:14px}
+details.pat summary{list-style:none;padding:12px 14px;cursor:pointer;display:flex;flex-direction:column;gap:2px}
+details.pat summary::-webkit-details-marker{display:none}
+details.pat .top{display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+details.pat .acc{font-family:var(--f-num);font-size:.82rem;color:var(--muted);white-space:nowrap}
+details.pat .acc.lo{color:var(--bad)}
+details.pat .f{font-family:var(--f-en);font-size:.95rem;color:var(--muted)}
+details.pat .body{padding:0 14px 14px;display:flex;flex-direction:column;gap:8px;font-size:.92rem}
+details.pat .body ul{margin:0;padding-left:1.2em}
+.confirm{background:var(--bad-soft);border:1px solid var(--bad);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:10px}
+textarea.out{width:100%;min-height:180px;font:inherit;font-size:.8rem;border-radius:12px;padding:10px;background:var(--surface);color:var(--ink);border:1px solid var(--line)}
+@media (prefers-reduced-motion: reduce){.bar i{transition:none}}
+</style>
+
+<div class="wrap" id="app">
+  <header><h1>學測句型</h1><span class="sync" id="sync">載入中…</span></header>
+  <p id="loading">正在載入題庫…</p>
+</div>
+
+<script>
+(() => {
+/* ====== 可調整的設定 ====== */
+const EXAM = '2027-01-23';           // 學測日期（改這裡）
+const REVIEW_GAPS = [1, 3, 7];       // 答錯後幾天再複習：1 天 → 3 天 → 7 天
+const VERSION = '1117-1';
+/* ========================= */
+
+const $ = (s, el=document) => el.querySelector(s);
+const $$ = (s, el=document) => Array.from(el.querySelectorAll(s));
+const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const shuffle = a => { a = a.slice(); for (let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; };
+
+// 所有 localStorage key 都以 grammar_ 開頭，不與片語、單字 App 衝突
+const KEY = 'grammar_prog', EKEY = 'grammar_errs', DKEY = 'grammar_day', LKEY = 'grammar_len', SKEY = 'grammar_scope';
+const TYPES = {fill:'填空', translate:'中譯英', correct:'選出正確句子'};
+const LEVELS = {1:'基本', 2:'學測', 3:'決勝'};
+
+const lsGet = (k, d) => { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch(e){ return d; } };
+const lsSet = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch(e){} };
+
+let PATS = [], ITEMS = [], PBY = {}, IBY = {}, CATS = [];
+let prog = lsGet(KEY, {});            // { itemId: {c, w, s(streak), t(last ts), box, due(day#)} }
+let errs = lsGet(EKEY, []);           // [{k, pid, cat, ty, trap, lv, a, p, t}]
+let day = lsGet(DKEY, {d:'', n:0});   // 今天第一次作答的新題數
+let SESSION = +lsGet(LKEY, 20) || 20;
+let scope = lsGet(SKEY, {cat:'全部', pid:''});
+function saveLocal(){ lsSet(KEY, prog); lsSet(EKEY, errs); lsSet(DKEY, day); }
+
+/* ---------- 日期 ---------- */
+const pad = n => String(n).padStart(2,'0');
+const ymd = d => `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+const dayNum = s => { const [y,m,d] = s.split('-').map(Number); return Math.round(Date.UTC(y,m-1,d)/864e5); };
+const todayStr = () => ymd(new Date());
+const todayNum = () => dayNum(todayStr());
+const daysLeft = () => dayNum(EXAM) - todayNum();
+function rollDay(){ if (day.d !== todayStr()){ day = {d: todayStr(), n: 0}; lsSet(DKEY, day); } }
+
+/* ---------- 熟練度（與另外兩個 App 相同：連續答對 2 次＝熟練） ---------- */
+const st = k => prog[k] || {c:0,w:0,s:0,t:0,box:0,due:null};
+const mastered = k => st(k).s >= 2;
+const isWeak = k => { const x = st(k); return x.w > 0 && x.s < 2; };
+const isDue = k => { const x = prog[k]; return !!(x && x.due != null && x.due <= todayNum()); };
+function pstat(pid){
+  let c = 0, w = 0, seen = 0, n = 0, mast = 0;
+  for (const it of ITEMS) if (it.pid === pid){ n++; const x = prog[it.id]; if (x){ seen++; c += x.c; w += x.w; if (x.s >= 2) mast++; } }
+  return {c, w, n, seen, mast, pct: c+w ? Math.round(c/(c+w)*100) : null};
+}
+const weakPattern = p => { const s = pstat(p.id); return !!p.weak || (s.c + s.w >= 4 && s.pct < 60); };
+
+/* ---------- 今日計畫 ---------- */
+function plan(){
+  rollDay();
+  const unpr = ITEMS.filter(it => !prog[it.id]).length;
+  const left = Math.max(1, daysLeft());
+  const quota = Math.ceil((unpr + day.n) / left);       // 今天開始時的配額，練完不會縮水
+  const due = ITEMS.filter(it => isDue(it.id));
+  return {unpr, left, quota, doneNew: day.n, newLeft: Math.max(0, Math.min(unpr, quota - day.n)), due};
+}
+function newInOrder(n){
+  // 依 patterns.json 的順序（重要度）取尚未練過的新題，同一句型內由易到難
+  const out = [];
+  for (const p of PATS){
+    const list = ITEMS.filter(it => it.pid === p.id && !prog[it.id]).sort((a,b) => (a.level||2) - (b.level||2));
+    for (const it of list){ if (out.length >= n) return out; out.push(it); }
+  }
+  return out;
+}
+
+/* ---------- 題目 ---------- */
+function blankify(s, fill){ return esc(s).replace(/_{3,}/, fill != null ? `<span class="blank ok">${esc(fill)}</span>` : '<span class="blank">&nbsp;</span>').replace(/_{3,}/g, '<span class="blank">&nbsp;</span>'); }
+function makeQ(it){
+  const order = shuffle([0,1,2,3].slice(0, it.options.length));
+  const opts = order.map(i => it.options[i]);
+  let prompt, body;
+  if (it.type === 'fill'){ prompt = '選出最適合填入空格的答案'; body = `<div class="sent">${blankify(it.stem)}</div>`; }
+  else if (it.type === 'translate'){ prompt = '選出最適當的英文翻譯'; body = `<div class="sent zh">${esc(it.stem)}</div>`; }
+  else { prompt = esc(it.stem || '選出文法正確的句子'); body = ''; }
+  if (it.hint) body += `<div class="hint">提示：${esc(it.hint)}</div>`;
+  return {order, opts, answer: order.indexOf(0), prompt, body};
+}
+
+/* ---------- 練習流程（沿用另外兩個 App：答錯 3～5 題後再出一次） ---------- */
+let queue = [], qi = 0, score = 0, total = 0, cur = null, sessName = '', sessKind = '';
+function startSession(list, name, kind){
+  if (!list.length) return;
+  queue = list.slice(); qi = 0; score = 0; total = list.length; sessName = name; sessKind = kind || ''; renderQ();
+}
+function startToday(){
+  const P = plan();
+  const fresh = newInOrder(P.newLeft), rev = shuffle(P.due);
+  // 每 2 題新題穿插 1 題複習
+  const out = []; let i = 0, j = 0;
+  while (i < fresh.length || j < rev.length){
+    if (i < fresh.length) out.push(fresh[i++]);
+    if (i < fresh.length) out.push(fresh[i++]);
+    if (j < rev.length) out.push(rev[j++]);
+  }
+  startSession(out, '今日練習', 'today');
+}
+function scopeItems(){
+  if (scope.pid && PBY[scope.pid]) return ITEMS.filter(it => it.pid === scope.pid);
+  if (scope.cat && scope.cat !== '全部') return ITEMS.filter(it => PBY[it.pid] && PBY[it.pid].cat === scope.cat);
+  return ITEMS.slice();
+}
+function scopeName(){ return scope.pid && PBY[scope.pid] ? `${scope.pid} ${PBY[scope.pid].name}` : (scope.cat || '全部'); }
+function batch(P){
+  // 與另外兩個 App 相同：約三成錯題，其次新題、未熟練、已熟練
+  const n = SESSION;
+  const weak = shuffle(P.filter(it => isWeak(it.id)));
+  const fresh = P.filter(it => !prog[it.id]);
+  const rest = shuffle(P.filter(it => prog[it.id] && !isWeak(it.id) && !mastered(it.id)));
+  const done = shuffle(P.filter(it => mastered(it.id)));
+  const w = weak.slice(0, Math.ceil(n*0.3));
+  return shuffle(w.concat(fresh, weak.slice(w.length), rest, done).slice(0, n));
+}
+function startScope(kind){
+  const P = scopeItems();
+  let list, name = scopeName();
+  if (kind === 'wrong'){ list = shuffle(P.filter(it => isWeak(it.id))).slice(0, SESSION); name += '・只練錯題'; }
+  else if (kind === 'weakpat'){ list = batch(P.filter(it => weakPattern(PBY[it.pid]))); name += '・弱點句型'; }
+  else if (kind === 'lv3'){ list = batch(P.filter(it => it.level === 3)); name += '・決勝題'; }
+  else list = batch(P);
+  startSession(list, name, 'scope');
+}
+
+function renderQ(){
+  if (qi >= queue.length) return renderDone();
+  const it = queue[qi], p = PBY[it.pid] || {}, q = makeQ(it);
+  cur = {it, q, answered:false};
+  const letters = 'ABCD';
+  $('#app').innerHTML = `
+    <div class="qtop"><span style="display:flex;gap:6px;flex-wrap:wrap"><span class="tag">${esc(TYPES[it.type] || it.type)}</span><span class="tag ${it.level===3?'lv3':''}">${esc(LEVELS[it.level] || '')}</span></span><span style="font-family:var(--f-num)">${qi+1} / ${queue.length}</span></div>
+    <div class="bar"><i style="width:${qi/queue.length*100}%"></i></div>
+    <div class="card"><div class="prompt">${q.prompt}</div><div id="body">${q.body}</div></div>
+    <div class="opts">${q.opts.map((o,i)=>`<button class="opt" data-i="${i}"><span class="k">${letters[i]}</span><span class="t">${esc(o)}</span></button>`).join('')}</div>
+    <div id="fb"></div>
+    <div class="go"><button class="btn ghost" id="quit">結束</button><button class="btn primary" id="next" hidden>下一題</button></div>
+    <p class="foot">${esc(sessName)}</p>`;
+  $$('.opt').forEach(b => b.addEventListener('click', () => answer(+b.dataset.i)));
+  $('#quit').addEventListener('click', () => qi > 0 || cur.answered ? renderDone() : renderHome());
+  $('#next').addEventListener('click', () => { qi++; renderQ(); });
+  window.scrollTo(0,0);
+}
+function answer(i){
+  if (cur.answered) return; cur.answered = true;
+  const {it, q} = cur, p = PBY[it.pid] || {}, ok = i === q.answer, k = it.id;
+  const first = !prog[k], x = Object.assign({c:0,w:0,s:0,t:0,box:0,due:null}, prog[k]);
+  $$('.opt').forEach((b,j) => { b.disabled = true; if (j===q.answer) b.classList.add('ok'); else if (j===i) b.classList.add('bad'); });
+  rollDay(); if (first) day.n++;
+  if (ok){
+    score++; x.c++; x.s++;
+    // 間隔複習：只有在「到期」時答對才往下一階
+    if (x.box > 0 && x.due != null && x.due <= todayNum()){
+      if (x.box >= REVIEW_GAPS.length){ x.box = 0; x.due = null; }
+      else { x.due = todayNum() + REVIEW_GAPS[x.box]; x.box++; }
+    }
+  } else {
+    x.w++; x.s = 0; x.box = 1; x.due = todayNum() + REVIEW_GAPS[0];
+    errs.push({k, pid: it.pid, cat: p.cat || '', ty: it.type, trap: it.trap || '其他', lv: it.level || 0, a: it.options[0], p: q.opts[i], t: Date.now()});
+    if (errs.length > 1500) errs = errs.slice(-1500);
+    const pos = Math.min(queue.length, qi + 3 + Math.floor(Math.random()*3));
+    if (queue.filter(z => z.id === k).length < 2) queue.splice(pos, 0, it);
+  }
+  x.t = Date.now(); prog[k] = x; saveLocal();
+  if (it.type === 'fill') $('#body').innerHTML = `<div class="sent">${blankify(it.stem, it.options[0])}</div>` + (it.hint ? `<div class="hint">${esc(it.hint)}</div>` : '');
+  // 每個誘答錯在哪裡（依畫面上的選項順序）
+  const why = q.order.map((orig, j) => orig === 0 ? '' :
+    `<li><span class="k" style="font-family:var(--f-num)">${'ABCD'[j]}</span> <span class="en"${j===i?' style="color:var(--bad)"':''}>${esc(it.options[orig])}</span>${j===i?' <b style="color:var(--bad)">（你選的）</b>':''}<br>${esc((it.dist||[])[orig-1] || '')}</li>`).filter(Boolean).join('');
+  $('#fb').innerHTML = `<div class="fb ${ok?'ok':'bad'}">
+      <h3 class="${ok?'ok-t':'bad-t'}">${ok ? '✓ 答對了' : '✗ 正解：'+'ABCD'[q.answer]}</h3>
+      ${!ok ? `<div class="en" style="font-weight:600">${esc(it.options[0])}</div>` : ''}
+      <div><b>${esc(p.id||'')} ${esc(p.name||'')}</b></div>
+      <div class="formula">${esc(p.formula||'')}</div>
+      <div>${esc(it.ex||'')}</div>
+      <div class="why"><div class="label">其他選項為什麼錯</div><ul>${why}</ul></div>
+      ${it.trap ? `<div class="label">陷阱：${esc(it.trap)}</div>` : ''}
+    </div>`;
+  $('#next').hidden = false; $('#next').textContent = qi+1 >= queue.length ? '看結果' : '下一題';
+  $('#next').scrollIntoView({block:'nearest', behavior:'smooth'});
+}
+function renderDone(){
+  const answered = Math.max(1, Math.min(queue.length, qi + (cur && cur.answered ? 1 : 0)));
+  const P = plan();
+  $('#app').innerHTML = `<header><h1>學測句型</h1><span class="sync" id="sync"></span></header>
+    <div class="card done"><div class="label">${esc(sessName)}・本輪答對</div><div class="big">${score} / ${answered}</div>
+    <div>${queue.length>total?`其中 ${queue.length-total} 題是答錯後的重練`:''}</div>
+    ${sessKind==='today' ? `<div class="sub">${P.newLeft || P.due.length ? `今日還有 ${P.newLeft} 題新題、${P.due.length} 題複習` : '今日進度完成！'}</div>` : ''}</div>
+    <div class="go"><button class="btn ghost" id="home">回首頁</button><button class="btn primary" id="again">${sessKind==='today' && !(P.newLeft || P.due.length) ? '分類練習' : '再一輪'}</button></div>`;
+  $('#home').addEventListener('click', renderHome);
+  $('#again').addEventListener('click', () => {
+    if (sessKind === 'today'){ const P2 = plan(); return (P2.newLeft || P2.due.length) ? startToday() : renderScope(); }
+    startScope(sessKind === 'scope' && /只練錯題/.test(sessName) ? 'wrong' : /弱點/.test(sessName) ? 'weakpat' : /決勝/.test(sessName) ? 'lv3' : 'all');
+  });
+  showSync();
+}
+
+/* ---------- 分類練習 ---------- */
+function renderScope(){
+  const catOk = scope.cat === '全部' || CATS.includes(scope.cat);
+  if (!catOk) scope = {cat:'全部', pid:''};
+  const pats = PATS.filter(p => scope.cat === '全部' || p.cat === scope.cat);
+  if (scope.pid && !pats.some(p => p.id === scope.pid)) scope.pid = '';
+  const P = scopeItems();
+  const nWrong = P.filter(it => isWeak(it.id)).length;
+  const nWeakPat = P.filter(it => weakPattern(PBY[it.pid])).length;
+  const nL3 = P.filter(it => it.level === 3).length;
+  lsSet(SKEY, scope);
+  $('#app').innerHTML = `
+    <header><h1>分類練習</h1><span class="sync" id="sync"></span></header>
+    <div class="label">類別</div>
+    <div class="chips">${['全部'].concat(CATS).map(c=>`<button class="chip cat" data-c="${esc(c)}" aria-pressed="${scope.cat===c}">${esc(c)}</button>`).join('')}</div>
+    <div class="label">單一句型（可不選）</div>
+    <select id="pid" aria-label="選擇句型"><option value="">整個類別（${pats.length} 個句型）</option>${pats.map(p=>`<option value="${esc(p.id)}" ${scope.pid===p.id?'selected':''}>${esc(p.id)} ${esc(p.name)}</option>`).join('')}</select>
+    <div class="stats">
+      <div class="stat"><span class="n">${P.length}</span><span class="l">題目</span></div>
+      <div class="stat"><span class="n">${P.filter(it=>prog[it.id]).length}</span><span class="l">練過</span></div>
+      <div class="stat"><span class="n">${P.filter(it=>mastered(it.id)).length}</span><span class="l">熟練</span></div>
+      <div class="stat"><span class="n">${nWrong}</span><span class="l">待重練</span></div>
+    </div>
+    <div class="label">每輪題數</div>
+    <div class="chips">${[10,20,30].map(n=>`<button class="chip len" data-n="${n}" aria-pressed="${SESSION===n}">${n} 題</button>`).join('')}</div>
+    <button class="btn primary" id="go-all" ${P.length?'':'disabled'}>開始 ${Math.min(SESSION, P.length)} 題</button>
+    <div class="go three">
+      <button class="btn ghost small" id="go-wrong" ${nWrong?'':'disabled'}>只練錯題<br><span class="sub" style="font-weight:400;font-size:.75rem">${nWrong} 題</span></button>
+      <button class="btn ghost small" id="go-weakpat" ${nWeakPat?'':'disabled'}>弱點句型<br><span class="sub" style="font-weight:400;font-size:.75rem">${nWeakPat} 題</span></button>
+      <button class="btn ghost small" id="go-lv3" ${nL3?'':'disabled'}>決勝題<br><span class="sub" style="font-weight:400;font-size:.75rem">${nL3} 題</span></button>
+    </div>
+    <p class="foot">弱點句型＝老師標記的弱點，或作答 4 次以上答對率低於 60% 的句型。</p>
+    <button class="btn ghost" id="home">回首頁</button>`;
+  $$('.chip.cat').forEach(b => b.addEventListener('click', () => { scope = {cat: b.dataset.c, pid: ''}; renderScope(); }));
+  $('#pid').addEventListener('change', e => { scope.pid = e.target.value; renderScope(); });
+  $$('.chip.len').forEach(b => b.addEventListener('click', () => { SESSION = +b.dataset.n; lsSet(LKEY, SESSION); renderScope(); }));
+  $('#go-all').addEventListener('click', () => startScope('all'));
+  $('#go-wrong').addEventListener('click', () => startScope('wrong'));
+  $('#go-weakpat').addEventListener('click', () => startScope('weakpat'));
+  $('#go-lv3').addEventListener('click', () => startScope('lv3'));
+  $('#home').addEventListener('click', renderHome);
+  showSync();
+}
+
+/* ---------- 句型總表 ---------- */
+function renderTable(){
+  $('#app').innerHTML = `
+    <header><h1>句型總表</h1><span class="sync" id="sync"></span></header>
+    <p class="foot" style="text-align:left;margin:0">點句型展開說明；右邊是你的答對率。</p>
+    ${CATS.map(c => `<div class="label">${esc(c)}</div>` + PATS.filter(p => p.cat === c).map(p => {
+      const s = pstat(p.id), lo = s.pct != null && s.pct < 60;
+      return `<details class="pat"><summary>
+          <div class="top"><b>${esc(p.id)} ${esc(p.name)}${weakPattern(p)?' <span class="tag lv3">弱點</span>':''}</b><span class="acc ${lo?'lo':''}">${s.pct==null ? `0/${s.n}` : `${s.pct}%・${s.seen}/${s.n}`}</span></div>
+          <div class="f">${esc(p.formula)}</div></summary>
+        <div class="body">
+          <div><div class="label">說明</div>${esc(p.zh)}</div>
+          <div><div class="label">例句</div><span class="en">${esc(p.ex)}</span></div>
+          ${(p.traps||[]).length ? `<div><div class="label">常見錯誤</div><ul>${p.traps.map(t=>`<li>${esc(t)}</li>`).join('')}</ul></div>` : ''}
+          <button class="btn primary small practise" data-p="${esc(p.id)}" ${s.n?'':'disabled'}>練這個句型（${s.n} 題）</button>
+        </div></details>`; }).join('')).join('')}
+    <button class="btn ghost" id="home">回首頁</button>`;
+  $$('.practise').forEach(b => b.addEventListener('click', () => { const p = PBY[b.dataset.p]; scope = {cat: p.cat, pid: p.id}; lsSet(SKEY, scope); startScope('all'); }));
+  $('#home').addEventListener('click', renderHome);
+  showSync();
+}
+
+/* ---------- 錯題報告 ---------- */
+function count(arr, f){ const o = {}; arr.forEach(e => { const k = f(e); o[k] = (o[k]||0)+1; }); return Object.entries(o).sort((a,b)=>b[1]-a[1]); }
+function renderReport(){
+  const byCat = count(errs, e => e.cat || '其他'), byTrap = count(errs, e => e.trap || '其他');
+  const maxT = byTrap.length ? byTrap[0][1] : 1;
+  const pairs = count(errs, e => e.a + '｜' + e.p).slice(0, 10);
+  const recent = errs.filter(e => Date.now()-e.t < 7*864e5).length;
+  $('#app').innerHTML = `
+    <header><h1>錯題報告</h1><span class="sync" id="sync"></span></header>
+    ${errs.length ? `
+    <div class="weak"><div class="label">最常掉進的陷阱</div>
+      <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px">${byTrap.map(([t,n])=>`
+        <div><div style="display:flex;justify-content:space-between;font-size:.9rem"><span>${esc(t)}</span><span style="font-family:var(--f-num)">${n}</span></div>
+        <div class="bar" style="height:8px"><i style="width:${n/maxT*100}%;background:var(--bad)"></i></div></div>`).join('')}</div></div>
+    <div class="weak"><div class="label">各類別錯題</div><ol>${byCat.map(([c,n])=>`<li>${esc(c)}　${n} 次</li>`).join('')}</ol></div>
+    <div class="weak"><div class="label">最常混淆（正解 ← 你選的）</div><ol>${pairs.map(([k,n])=>{const [a,p]=k.split('｜');return `<li><span class="en">${esc(a)}</span> ← <span class="en" style="color:var(--bad)">${esc(p)}</span>　${n} 次</li>`;}).join('')}</ol></div>
+    <p class="foot">共 ${errs.length} 筆錯題，最近 7 天 ${recent} 筆。</p>
+    <button class="btn primary" id="export">複製錯題報告（傳給老師）</button>
+    <textarea id="exp" class="out" readonly hidden></textarea><div id="expmsg" class="foot" hidden></div>` :
+    `<div class="card"><div>還沒有錯題紀錄。開始練習後，這裡會統計你最常掉進哪一類陷阱、哪一類句型最常錯。</div></div>`}
+    <div class="go"><button class="btn ghost" id="home">回首頁</button><button class="btn primary" id="weakgo" ${ITEMS.some(it=>isWeak(it.id))?'':'disabled'}>練這些錯題</button></div>
+    <div id="resetbox"><button class="btn ghost" id="reset" style="width:100%;color:var(--bad)">重設句型練習進度…</button></div>`;
+  $('#home').addEventListener('click', renderHome);
+  $('#weakgo').addEventListener('click', () => { scope = {cat:'全部', pid:''}; startScope('wrong'); });
+  $('#reset').addEventListener('click', showResetConfirm);
+  const ex = $('#export');
+  if (ex) ex.addEventListener('click', () => {
+    const t = buildReport(), ta = $('#exp'), msg = $('#expmsg');
+    ta.value = t; ta.hidden = false; msg.hidden = false;
+    const done = () => { msg.textContent = '已複製。打開 LINE 或訊息，長按貼上傳給老師。'; };
+    const fail = () => { ta.focus(); ta.select(); msg.textContent = '這裡無法自動複製：請長按上方文字，選「全選」再「拷貝」。'; };
+    try { navigator.clipboard.writeText(t).then(done, fail); } catch(e){ fail(); }
+  });
+  showSync();
+}
+function showResetConfirm(){
+  $('#resetbox').innerHTML = `<div class="confirm" role="alertdialog" aria-labelledby="rt">
+      <b id="rt" class="bad-t" style="color:var(--bad)">確定要清除句型練習的所有紀錄？</b>
+      <div style="font-size:.9rem">會清除這台裝置上 ${Object.keys(prog).length} 題的作答紀錄與 ${errs.length} 筆錯題，無法復原。片語、單字 App 的進度不受影響。建議先複製錯題報告。</div>
+      <div class="go"><button class="btn ghost" id="rno">取消</button><button class="btn danger" id="ryes">確定清除</button></div></div>`;
+  $('#rno').addEventListener('click', renderReport);
+  $('#ryes').addEventListener('click', () => {
+    prog = {}; errs = []; day = {d: todayStr(), n: 0};
+    try { Object.keys(localStorage).filter(k => k.startsWith('grammar_') && k !== LKEY && k !== SKEY).forEach(k => localStorage.removeItem(k)); } catch(e){}
+    saveLocal(); renderHome();
+  });
+  $('#ryes').focus();
+}
+function buildReport(){
+  const d = new Date(), P = plan(), lines = [`【學測句型】錯題報告 ${d.getFullYear()}/${d.getMonth()+1}/${d.getDate()}`];
+  const seen = ITEMS.filter(it => prog[it.id]);
+  const c = seen.reduce((a,it)=>a+st(it.id).c,0), w = seen.reduce((a,it)=>a+st(it.id).w,0);
+  lines.push(`練過 ${seen.length}／${ITEMS.length} 題，作答 ${c+w} 次，答對率 ${c+w ? Math.round(c/(c+w)*100) : 0}%，熟練 ${ITEMS.filter(it=>mastered(it.id)).length} 題`);
+  lines.push(`距學測 ${daysLeft()} 天；今日新題 ${P.doneNew}／${P.quota}，待複習 ${P.due.length} 題`);
+  lines.push('各類別錯題：' + (count(errs, e => e.cat || '其他').map(([t,n])=>`${t} ${n}`).join('、') || '無'));
+  lines.push('陷阱類型：' + (count(errs, e => e.trap || '其他').map(([t,n])=>`${t} ${n}`).join('、') || '無'));
+  lines.push('題型：' + (count(errs, e => TYPES[e.ty] || e.ty).map(([t,n])=>`${t} ${n}`).join('、') || '無'));
+  const weakPats = PATS.filter(weakPattern).map(p => { const s = pstat(p.id); return `${p.id} ${p.name}（${s.pct==null?'未練':s.pct+'%'}）`; });
+  if (weakPats.length) lines.push('弱點句型：' + weakPats.join('、'));
+  for (const cat of CATS){
+    const E = errs.filter(e => e.cat === cat); if (!E.length) continue;
+    const all = ITEMS.filter(it => PBY[it.pid].cat === cat), sn = all.filter(it => prog[it.id]);
+    const cc = sn.reduce((a,it)=>a+st(it.id).c,0), ww = sn.reduce((a,it)=>a+st(it.id).w,0);
+    lines.push('', '■ ' + cat);
+    lines.push(`練過 ${sn.length}／${all.length} 題，作答 ${cc+ww} 次，答對率 ${cc+ww ? Math.round(cc/(cc+ww)*100) : 0}%，熟練 ${all.filter(it=>mastered(it.id)).length} 題，錯 ${E.length} 次`);
+    lines.push('句型錯題：' + count(E, e => e.pid).map(([pid,n]) => `${pid} ${PBY[pid] ? PBY[pid].name : ''} ${n}`).join('、'));
+    lines.push('陷阱類型：' + count(E, e => e.trap || '其他').map(([t,n])=>`${t} ${n}`).join('、'));
+    lines.push('錯誤組合（正解 ← 誤選）：');
+    count(E, e => `[${e.k}] ${e.a} ← ${e.p}`).slice(0,40).forEach(([k,n]) => lines.push(`- ${k}（${n}）`));
+    const weak = all.filter(it => isWeak(it.id)).sort((a,b)=>st(b.id).w-st(a.id).w).slice(0,40);
+    if (weak.length){ lines.push('尚未熟練：'); weak.forEach(it => lines.push(`- ${it.id}｜${PBY[it.pid].name}｜${TYPES[it.type]||it.type}｜${it.trap||''}（錯 ${st(it.id).w}）`)); }
+  }
+  return lines.join('\n');
+}
+
+/* ---------- 首頁 ---------- */
+function renderHome(){
+  queue = []; cur = null;
+  const P = plan(), left = daysLeft();
+  const seen = ITEMS.filter(it => prog[it.id]).length, mast = ITEMS.filter(it => mastered(it.id)).length, weak = ITEMS.filter(it => isWeak(it.id)).length;
+  const todayTotal = P.newLeft + P.due.length;
+  const pctNew = P.quota ? Math.min(100, P.doneNew / P.quota * 100) : 100;
+  const weakPats = PATS.map(p => ({p, s: pstat(p.id)})).filter(x => x.s.c + x.s.w > 0 && x.s.pct < 80).sort((a,b) => a.s.pct - b.s.pct).slice(0,5);
+  $('#app').innerHTML = `
+    <header><h1>學測句型</h1><span class="sync" id="sync"></span></header>
+    <div class="today">
+      <div class="row"><h2>今日練習</h2><span class="sub">${left > 0 ? `距學測 <b style="font-family:var(--f-num)">${left}</b> 天` : left === 0 ? '今天學測，加油！' : '學測已結束'}</span></div>
+      <div class="row"><span><span class="big">${P.doneNew}</span><span class="sub"> / ${P.quota} 新題</span></span><span class="sub">待複習 <b style="font-family:var(--f-num)">${P.due.length}</b> 題</span></div>
+      <div class="bar"><i style="width:${pctNew}%"></i></div>
+      <div class="sub">還有 ${P.unpr} 題沒練過，每天 ${P.quota} 題可在考前練完；答錯的題目 1、3、7 天後再出現。</div>
+      <button class="btn primary" id="today" ${todayTotal?'':'disabled'}>${todayTotal ? `開始今日練習（${todayTotal} 題）` : '今日進度完成 ✓'}</button>
+    </div>
+    <div class="stats">
+      <div class="stat"><span class="n">${ITEMS.length}</span><span class="l">題目</span></div>
+      <div class="stat"><span class="n">${seen}</span><span class="l">練過</span></div>
+      <div class="stat"><span class="n">${mast}</span><span class="l">熟練</span></div>
+      <div class="stat"><span class="n">${weak}</span><span class="l">待重練</span></div>
+    </div>
+    <div class="go"><button class="btn ghost" id="scope">分類練習</button><button class="btn ghost" id="table">句型總表</button></div>
+    <button class="btn ghost" id="report">錯題報告${errs.length?`（${errs.length} 筆）`:''}</button>
+    ${weakPats.length ? `<div class="weak"><div class="label">最需要加強的句型</div><ol>${weakPats.map(x=>`<li>${esc(x.p.id)} ${esc(x.p.name)}　答對率 ${x.s.pct}%</li>`).join('')}</ol></div>` : ''}
+    <p class="foot">共 ${PATS.length} 個句型、${ITEMS.length} 題。連續答對 2 次算熟練；答錯的題目會在幾題後再出現。</p>
+    <p class="foot"><a href="../" style="color:var(--accent)">← 片語・一字多義</a>　<a href="../vocab/" style="color:var(--accent)">學測單字 →</a></p>`;
+  $('#today').addEventListener('click', startToday);
+  $('#scope').addEventListener('click', renderScope);
+  $('#table').addEventListener('click', renderTable);
+  $('#report').addEventListener('click', renderReport);
+  showSync();
+}
+function showSync(){ const el = $('#sync'); if (el) el.textContent = '進度存在這台裝置'; }
+
+Promise.all(['patterns.json','items.json'].map(f => fetch(f).then(r => { if (!r.ok) throw new Error(f + ' ' + r.status); return r.json(); })))
+.then(([pats, items]) => {
+  PATS = pats; PATS.forEach(p => PBY[p.id] = p);
+  ITEMS = items.filter(it => PBY[it.pid] && Array.isArray(it.options) && it.options.length >= 2);
+  ITEMS.forEach(it => IBY[it.id] = it);
+  CATS = [...new Set(PATS.map(p => p.cat))];
+  // 清掉題庫更新後已不存在的題目紀錄
+  for (const k of Object.keys(prog)) if (!IBY[k]) delete prog[k];
+  renderHome();
+}).catch(e => { const el = $('#loading'); if (el) el.innerHTML = '<span class="err">題庫載入失敗，請重新整理頁面。</span>'; console.warn(e); });
+})();
+</script>
+
+</body>
+</html>
